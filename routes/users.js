@@ -13,12 +13,12 @@ router.post('/', async (req, res) => {
     if (error) return res.status(400).send(error.details[0].message);
 
     let user = await User.findOne({ email: req.body.email });
-    if (user) return res.status(400).send("User already exist.")
+    if (user) return res.status(400).send("User already exist.");
 
-    user = new User(_.pick(req.body, ['email', 'name', 'password']));
+    user = new User(_.pick(req.body, ['password', 'email', 'name']));
     await user.save();
 
-    res.send(user);
+    res.send(_.pick(req.body, ['_id', 'email', 'name']));
 });
 
 module.exports = router;
