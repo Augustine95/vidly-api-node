@@ -12,6 +12,13 @@
   "dependencies": {
     "express": "^4.17.3",
     "joi": "^17.6.0",
-    "mongoose": "^6.2.9"
+    "mongoose": "^6.2.9",
+    "joi-objectid": "^4.0.2",
+    "jsonwebtoken": "^8.5.1",
+    "jwt-decode": "^3.1.2",
+    "lodash": "^4.17.21",
+    "fawn": "^2.1.5",
+    "bcrypt": "^5.0.1",
+    "config": "^3.3.7"
   }
 }
