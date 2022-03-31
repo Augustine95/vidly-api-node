@@ -1,15 +1,18 @@
-const { Rental, validate } = require('../models/rental');
-const { Movie } = require('../models/movie');
-const { Customer } = require('../models/customer');
-const express = require('express');
+const { Rental, validate } = require("../models/rental");
+const { Movie } = require("../models/movie");
+const { Customer } = require("../models/customer");
+const Fawn = require("fawn");
+const express = require("express");
 const router = express.Router();
 
-router.get('/', async (req, res) => {
-    const rentals = await Rental.find().sort('-dateOut');
+Fawn.init("mongodb://localhost/vidly-api-node");
+
+router.get("/", async (req, res) => {
+    const rentals = await Rental.find().sort("-dateOut");
     res.send(rentals);
 });
 
-router.post('/', async (req, res) => {
+router.post("/", async (req, res) => {
     const { error } = validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
@@ -26,17 +29,31 @@ router.post('/', async (req, res) => {
         customer: {
             _id: customer._id,
             name: customer.name,
-            phone: customer.phone
+            phone: customer.phone,
         },
         movie: {
             _id: movie._id,
             title: movie.title,
-            dailyRentalRate: movie.dailyRentalRate
-        }
+            dailyRentalRate: movie.dailyRentalRate,
+        },
     });
-    await rental.save();
 
-    res.send(rental);
+    try {
+        new Fawn.Task()
+            .save("rentals", rental)
+            .update(
+                "movies",
+                { _id: movie._id },
+                {
+                    $inc: { numberInStock: -1 },
+                }
+            )
+            .run();
+
+        res.send(rental);
+    } catch (ex) {
+        res.status(500).send("Something failed.")
+    }
 });
 
 module.exports = router;
