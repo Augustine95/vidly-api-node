@@ -1,3 +1,4 @@
+const auth = require('../middleware/auth');
 const { Customer, validate } = require("../models/customer");
 const express = require("express");
 const router = express.Router();
@@ -49,7 +50,7 @@ router.post('/', async (req, res) => {
     res.send(customer);
 });
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', auth, async (req, res) => {
     const customer = await Customer.findById(req.params.id);
 
     if (!customer) return res.status(400).send("The user with the given ID was not found.")
