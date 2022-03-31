@@ -4,8 +4,9 @@ const { Customer } = require("../models/customer");
 const Fawn = require("fawn");
 const express = require("express");
 const router = express.Router();
+const { db } = require('../config/config.json');
 
-Fawn.init("mongodb://localhost/vidly-api-node");
+Fawn.init(db);
 
 router.get("/", async (req, res) => {
     const rentals = await Rental.find().sort("-dateOut");
