@@ -4,9 +4,9 @@ const { Customer } = require("../models/customer");
 const Fawn = require("fawn");
 const express = require("express");
 const router = express.Router();
-const { dbConnection } = require('../config/config.json');
+const { connection } = require('../startup/db');
 
-Fawn.init(dbConnection);
+Fawn.init(connection);
 
 router.get("/", async (req, res) => {
     const rentals = await Rental.find().sort("-dateOut");
