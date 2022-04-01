@@ -1,3 +1,4 @@
+const asyncMiddleware = require('../middleware/async');
 const { Rental, validate } = require("../models/rental");
 const { Movie } = require("../models/movie");
 const { Customer } = require("../models/customer");
@@ -8,12 +9,12 @@ const { db } = require('../config/config.json');
 
 Fawn.init(db);
 
-router.get("/", async (req, res) => {
+router.get("/", asyncMiddleware(async (req, res) => {
     const rentals = await Rental.find().sort("-dateOut");
     res.send(rentals);
-});
+}));
 
-router.post("/", async (req, res) => {
+router.post("/", asyncMiddleware(async (req, res) => {
     const { error } = validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
@@ -55,6 +56,6 @@ router.post("/", async (req, res) => {
     } catch (ex) {
         res.status(500).send("Something failed.")
     }
-});
+}));
 
 module.exports = router;
