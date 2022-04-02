@@ -1,5 +1,5 @@
 const winston = require("winston");
-require("winston-mongodb");
+// require("winston-mongodb");
 require("express-async-errors");
 const { connection } = require('./db');
 
@@ -12,5 +12,5 @@ module.exports = function () {
     process.on("unhandledRejection", (ex) => { throw ex });
 
     winston.add(winston.transports.File, { filename: "test.log" });
-    winston.add(winston.transports.MongoDB, { db: connection });
+    // winston.add(winston.transports.MongoDB, { db: connection });
 };
