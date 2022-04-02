@@ -1,11 +1,11 @@
 const winston = require('winston');
 const mongoose = require('mongoose');
-
-const connection = "mongodb://localhost/vidly-api-node";
+const config = require('config');
 
 module.exports = function () {
+    const db = config.get('db');
+
     mongoose
-        .connect(connection)
-        .then(() => winston.info("Connected to MongoDB..."));
+        .connect(db)
+        .then(() => winston.info(`Connected to ${db}...`));
 };
-module.exports.connection = connection;

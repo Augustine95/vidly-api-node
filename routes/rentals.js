@@ -2,11 +2,11 @@ const { Rental, validate } = require("../models/rental");
 const { Movie } = require("../models/movie");
 const { Customer } = require("../models/customer");
 const Fawn = require("fawn");
+const config = require('config');
 const express = require("express");
 const router = express.Router();
-const { connection } = require('../startup/db');
 
-Fawn.init(connection);
+Fawn.init(config.get('db'));
 
 router.get("/", async (req, res) => {
     const rentals = await Rental.find().sort("-dateOut");
