@@ -3,13 +3,15 @@ const request = require('supertest');
 const { Genre } = require('../../models/genre');
 const { User } = require('../../models/user');
 
-let server;
-
 describe("api/genres", () => {
+    let server;
+
     beforeEach(() => { server = require('../../index'); });
+
     afterEach(async () => {
-        server.close();
-        await Genre.remove({});
+        await Genre.deleteMany({});
+        await User.deleteMany({});
+        await server.close();
     });
 
     describe('GET/', () => {
@@ -35,7 +37,7 @@ describe("api/genres", () => {
             const genre = new Genre({ name: 'genre1' });
             await genre.save();
 
-            const res = await request(server).get('api/genres/' + genre._id);
+            const res = await request(server).get('/api/genres/' + genre._id);
 
             expect(res.status).toBe(200);
             expect(res.body).toHaveProperty('name', genre.name);
@@ -64,7 +66,7 @@ describe("api/genres", () => {
             return await request(server)
                 .post('/api/genres')
                 .set('x-auth-token', token)
-                .send(name);
+                .send({ name });
         };
 
         beforeEach(() => {
@@ -105,7 +107,10 @@ describe("api/genres", () => {
         });
 
         it('should return the genre if it is valid', async () => {
+            console.log("TOKEN", token);
+            console.log("NAME", name);
             const res = await exec();
+            console.log("RES", res.body);
 
             expect(res.body).toHaveProperty('_id');
             expect(res.body).toHaveProperty('name', 'genre1');
@@ -210,7 +215,7 @@ describe("api/genres", () => {
             token = new User({ isAdmin: true }).generateAuthToken();
         });
 
-        it('should return 401 if client is not logged in', () => {
+        it('should return 401 if client is not logged in', async () => {
             token = '';
 
             const res = await exec();
@@ -218,7 +223,7 @@ describe("api/genres", () => {
             expect(res.status).toBe(401);
         });
 
-        it('should return 403 if client is not an admin', () => {
+        it('should return 403 if client is not an admin', async () => {
             token = new User({ isAdmin: false }).generateAuthToken();
 
             const res = await exec();
@@ -226,7 +231,7 @@ describe("api/genres", () => {
             expect(res.status).toBe(403);
         });
 
-        it('should return 404 if id is invalid', () => {
+        it('should return 404 if id is invalid', async () => {
             id = 1;
 
             const res = await exec();
@@ -234,7 +239,7 @@ describe("api/genres", () => {
             expect(res.status).toBe(404);
         });
 
-        it('should return 404 if the genre with the given id was not found', () => {
+        it('should return 404 if the genre with the given id was not found', async () => {
             id = mongoose.Types.ObjectId();
 
             const res = await exec();
@@ -242,7 +247,7 @@ describe("api/genres", () => {
             expect(res.status).toBe(404);
         });
 
-        it('should delete the genre if input is valid', () => {
+        it('should delete the genre if input is valid', async () => {
             await exec();
 
             const genreInDb = await Genre.findById(id);
@@ -250,7 +255,7 @@ describe("api/genres", () => {
             expect(genreInDb).toBeNull();
         });
 
-        it('should return the removed genre', () => {
+        it('should return the removed genre', async () => {
             const res = await exec();
 
             expect(res.body).toHaveProperty('_id', genre._id.toHexString());
