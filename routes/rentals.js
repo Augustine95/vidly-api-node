@@ -5,6 +5,7 @@ const Fawn = require("fawn");
 const config = require('config');
 const express = require("express");
 const router = express.Router();
+const validator = require('../middleware/validate');
 
 Fawn.init(config.get('db'));
 
@@ -13,10 +14,7 @@ router.get("/", async (req, res) => {
     res.send(rentals);
 });
 
-router.post("/", async (req, res) => {
-    const { error } = validate(req.body);
-    if (error) return res.status(400).send(error.details[0].message);
-
+router.post("/", validator(validate), async (req, res) => {
     let movie = await Movie.findById(req.body.movieId);
     if (!movie) return res.status(400).send("Invalid movie.");
 

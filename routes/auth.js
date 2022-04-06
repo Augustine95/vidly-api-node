@@ -5,16 +5,14 @@ const { User } = require('../models/user');
 const bcrypt = require('bcrypt');
 const express = require('express');
 const router = express.Router();
+const validator = require('../middleware/validate');
 
 router.get('/me', asyncMiddleware(async (req, res) => {
     const user = await User.findById(req.params.id).select('-password');
     res.send(user);
 }));
 
-router.post('/', asyncMiddleware(async (req, res) => {
-    const { error } = validate(req.body);
-    if (error) return res.status(400).send(error.details[0].message);
-
+router.post('/', validator(validate), asyncMiddleware(async (req, res) => {
     let user = await User.findOne({ email: req.body.email });
     if (!user) return res.status(400).send("Invalid email or password.");
 
