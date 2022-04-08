@@ -2,6 +2,10 @@ const winston = require("winston");
 const express = require("express");
 const app = express();
 
+if (!config.get('jwtPrivateKey')) {
+  process.exit(1);
+}
+
 require("./startup/logging")();
 require("./startup/validation")();
 require("./startup/routes")(app);
