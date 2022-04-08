@@ -7,6 +7,7 @@ require("./startup/validation")();
 require("./startup/routes")(app);
 require("./startup/db")();
 require("./startup/config")();
+require("./startup/prod")(app);
 
 const port = process.env.PORT || 3000;
 const server = app
@@ -14,7 +15,7 @@ const server = app
   .on("error", () => {
     process.once("SIGUSR2", () => process.kill(process.pid, "SIGUSR2"));
     process.once("SIGINT", () => process.kill(process.pid, "SIGINT"));
-    process.once("uncaughtException", () => console.log("UNCAUGHT EXCEPTION"));
+    process.once("uncaughtException", () => winston.info("UNCAUGHT EXCEPTION"));
   });
 
 module.exports = server;

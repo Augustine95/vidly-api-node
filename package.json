@@ -4,17 +4,23 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "jest --watchAll --verbose --coverage"
+    "test": "jest --watchAll --verbose --coverage",
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": "16.14.0"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.0.1",
+    "compression": "^1.7.4",
     "config": "^3.3.7",
     "express": "^4.17.3",
     "express-async-errors": "^3.1.1",
     "fawn": "^2.1.5",
+    "helmet": "^5.0.2",
     "joi": "^17.6.0",
     "joi-objectid": "^4.0.2",
     "jsonwebtoken": "^8.5.1",
@@ -22,6 +28,8 @@
     "lodash": "^4.17.21",
     "moment": "^2.29.2",
     "mongoose": "^6.2.9",
+    "netlify-lambda": "^2.0.15",
+    "serverless-http": "^3.0.1",
     "winston": "^2.4.0",
     "winston-mongodb": "^3.0.0"
   },
