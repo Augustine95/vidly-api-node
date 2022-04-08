@@ -21,7 +21,7 @@ describe("/api/returns", () => {
     };
 
     beforeEach(async () => {
-        server = require("../../index");
+        server = require("../../server");
 
         customerId = mongoose.Types.ObjectId();
         movieId = mongoose.Types.ObjectId();
@@ -52,8 +52,8 @@ describe("/api/returns", () => {
     });
 
     afterEach(async () => {
-        await Rental.remove({});
-        await User.remove({});
+        await Rental.deleteMany({});
+        await User.deleteMany({});
         await server.close();
     });
 

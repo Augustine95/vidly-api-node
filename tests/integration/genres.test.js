@@ -6,7 +6,7 @@ const { User } = require('../../models/user');
 describe("api/genres", () => {
     let server;
 
-    beforeEach(() => { server = require('../../index'); });
+    beforeEach(() => { server = require('../../server'); });
 
     afterEach(async () => {
         await Genre.deleteMany({});
@@ -107,10 +107,7 @@ describe("api/genres", () => {
         });
 
         it('should return the genre if it is valid', async () => {
-            console.log("TOKEN", token);
-            console.log("NAME", name);
             const res = await exec();
-            console.log("RES", res.body);
 
             expect(res.body).toHaveProperty('_id');
             expect(res.body).toHaveProperty('name', 'genre1');
